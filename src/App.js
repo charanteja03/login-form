@@ -1,25 +1,35 @@
 import './App.css';
 import React from 'react';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser, setInputParamsError } from './thunks';
 
 function App() {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const dispatch = useDispatch();
+  const loading = useSelector(state => state.login.loading);
+  const error = useSelector(state => state.login.error);
+  const userDetails = useSelector(state => state.login.userDetails);
 
   const handleLoginSubmit = () => {
-    alert('login detected ' + username + ' ' + password);
-    axios.get('login').then(response => {
-      console.log('logged in')
-    }).catch(e => {
-      console.log(e);
-    })
-    console.log('clicked login');
+    if (!username) {
+      dispatch(setInputParamsError('Please enter username'))
+    } else if (!password) {
+      dispatch(setInputParamsError('Please enter password'))
+    } else {
+      dispatch(loginUser({ username, password, }));
+    }
   }
+
+  console.log('service loading error', error);
+  console.log('user logged in', userDetails);
 
   return (
     <div className="App">
       <header className="App-header">
-        <section className="login-section" style={{
+        {loading ? (<section className="spinner"></section>)
+        : (
+          <section className="login-section" style={{
           backgroundColor: 'white',
           color: 'black',
           width: '300px',
@@ -28,7 +38,7 @@ function App() {
           padding: '15px'
         }}>
           <div>Login Form</div>
-          <form onSubmit={handleLoginSubmit}>
+          <form>
             <div className="form-group" style={{
               display: 'flex',
               alignItems: 'flex-start',
@@ -65,14 +75,20 @@ function App() {
                 minWidth: '200px'
               }}/>
             </div>
-            <div>
-              <button type="submit" onClick={handleLoginSubmit} style={{
+          </form>
+          <div>
+              <button onClick={handleLoginSubmit} style={{
                 width: '80%',
                 height: '30px'
               }}>Login</button>
             </div>
-          </form>
+            <br />
+            <div style={{
+              color: 'red',
+              fontSize: '10px',
+            }}>{error}</div>
         </section>
+        )}
       </header>
     </div>
   );

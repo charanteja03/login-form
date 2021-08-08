@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+.spinner {
+  background-image: url(https://c.tenor.com/I6kN-6X7nhAAAAAi/loading-buffering.gif);
+  background-size: cover;
+  width: 100px;
+  height: 100px;
+  background-color: transparent;
+}
